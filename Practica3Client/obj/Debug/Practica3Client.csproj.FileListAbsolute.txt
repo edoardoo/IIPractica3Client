@@ -1,0 +1,8 @@
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\Practica3Client\bin\Debug\Practica3Client.exe.config
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\bin\Debug\Practica3Client.exe.config
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\bin\Debug\Practica3Client.exe
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\bin\Debug\Practica3Client.pdb
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.Properties.Resources.resources
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.csproj.GenerateResource.Cache
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.exe
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.pdb
