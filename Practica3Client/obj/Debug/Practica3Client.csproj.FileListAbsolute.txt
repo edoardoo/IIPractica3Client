@@ -6,3 +6,5 @@ C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\De
 C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.csproj.GenerateResource.Cache
 C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.exe
 C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.pdb
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.csprojResolveAssemblyReference.cache
+C:\Users\edo\Documents\GitHubVisualStudio\Practica3Client\Practica3Client\obj\Debug\Practica3Client.Main.resources
