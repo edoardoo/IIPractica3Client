@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleTCP;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,44 +13,82 @@ namespace Practica3Client {
     public partial class Main : Form {
         public String TCP_TEXT_START = "Start Connection";
         public String TCP_TEXT_STOP = "Stop Connection";
-
-        private AsynchronousClient client;
-        System.Threading.Thread tcpClient;
+        private SimpleTcpClient client;
+        private static int port = 11000;
+        private static string address = "127.0.0.1";
+        //private AsynchronousClient client;
+        //System.Threading.Thread tcpClient;
 
         public Main() {
 
             InitializeComponent();
             
         }
-        public void addLog(String message) {
+
+        public static String GetTimestamp(DateTime value) {
+            return value.ToString("[ yyyy/MM/dd HH:mm:ss ]");
+        }
+
+        public void addLogFromServer(String message) {
             this.UIThread(delegate {
-                addLogMessage("Received message from server: " + message);
+                String timeStamp = GetTimestamp(DateTime.Now);
+                addLogMessage( "Received message from server: " + message);
 
             });
         }
-        
+        public void addLog(String message) {
+            this.UIThread(delegate {
+
+                String timeStamp = GetTimestamp(DateTime.Now);
+                addLogMessage( message );
+
+            });
+        }
+
 
         public void addLogMessage(String message) {
-            output.AppendText(message.ToString() + System.Environment.NewLine + "\n\r");
+            String timeStamp = GetTimestamp(DateTime.Now);
+            output.AppendText(timeStamp + " " + message.ToString() + System.Environment.NewLine + "\n\r");
         }
         private void initSocket() {
-            client = new AsynchronousClient(output, connectionButton);
-            tcpClient = new System.Threading.Thread(
-               new System.Threading.ThreadStart(client.StartClient)
-            );
-            tcpClient.IsBackground = true;
-            tcpClient.Start();
+
+            addLog("Connecting client to " + address + " and port " + port + "...");
+            try {
+
+                this.client = new SimpleTcpClient().Connect(address, port);
+                addLog("Connected!");
+                connectionButton.Text = TCP_TEXT_STOP;
+
+                //add listener for server replies.
+                client.DataReceived += Client_DataReceived;
+
+            } catch( Exception ex) {
+                addLog("Error connecting: " + ex.ToString());
+            }
+
+        }
+
+        private void Client_DataReceived(object sender, SimpleTCP.Message e) {
+            addLogFromServer(e.MessageString);
         }
 
         private void killSocket() {
-            client.closeSocket();
-            tcpClient.Abort();
+            try {
+                client.Disconnect();
+                connectionButton.Text = TCP_TEXT_START;
+
+            } catch ( Exception ex) {
+                //addLog("Error disconnecting: " + ex.ToString());
+
+            }
         }
         private void sendMessage( String message ) {
             try {
-                client.sendMessage(message);
-            }catch( Exception ex) {
-
+                addLog("Sending message: " + message);
+                client.WriteLine(message);
+                
+            } catch ( Exception ex ) {
+                addLog("Error sending message: " + ex);
             }
 
         }
@@ -84,9 +123,13 @@ namespace Practica3Client {
 
         private void connection_Click(object sender, EventArgs e) {
             if( connectionButton.Text == TCP_TEXT_START) {
-                statusTimer.Enabled = true;
+
                 initSocket();
+                readInputs.Enabled = true;
+                writeOutputs.Enabled = true;
             } else {
+                readInputs.Enabled = false;
+                writeOutputs.Enabled = false;
                 killSocket();
                 connectionButton.Text = TCP_TEXT_START;
                 addLogMessage("Closed socket.") ;
@@ -96,12 +139,10 @@ namespace Practica3Client {
         
         private void statusTimer_Tick(object sender, EventArgs e) {
             try {
-                    String tcpStatus = client.getSocketStatus();
-                    status.Text = tcpStatus;
-               
-            } catch (Exception ex) {
+                status.Text = (client.TcpClient.Connected) ? "Online" : "Offline";
+            }catch( Exception ex) {
                 status.Text = "Offline";
-             }
+            }
         }
     }
     static class FormExtensions {
@@ -113,5 +154,5 @@ namespace Practica3Client {
             code.Invoke();
 
         }
-    }
+    }   
 }
