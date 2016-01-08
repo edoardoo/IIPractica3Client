@@ -38,6 +38,10 @@
             this.connectionButton = new System.Windows.Forms.Button();
             this.status = new System.Windows.Forms.Label();
             this.statusTimer = new System.Windows.Forms.Timer(this.components);
+            this.addressTextBox = new System.Windows.Forms.TextBox();
+            this.portTextBox = new System.Windows.Forms.TextBox();
+            this.saveParams = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.readInputs.SuspendLayout();
             this.writeOutputs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackAO0)).BeginInit();
@@ -160,7 +164,7 @@
             // 
             // connectionButton
             // 
-            this.connectionButton.Location = new System.Drawing.Point(13, 412);
+            this.connectionButton.Location = new System.Drawing.Point(198, 413);
             this.connectionButton.Name = "connectionButton";
             this.connectionButton.Size = new System.Drawing.Size(97, 23);
             this.connectionButton.TabIndex = 8;
@@ -171,7 +175,7 @@
             // status
             // 
             this.status.AutoSize = true;
-            this.status.Location = new System.Drawing.Point(116, 418);
+            this.status.Location = new System.Drawing.Point(301, 421);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(37, 13);
             this.status.TabIndex = 9;
@@ -182,12 +186,55 @@
             this.statusTimer.Enabled = true;
             this.statusTimer.Tick += new System.EventHandler(this.statusTimer_Tick);
             // 
+            // addressTextBox
+            // 
+            this.addressTextBox.Location = new System.Drawing.Point(13, 415);
+            this.addressTextBox.Name = "addressTextBox";
+            this.addressTextBox.Size = new System.Drawing.Size(100, 20);
+            this.addressTextBox.TabIndex = 10;
+            this.addressTextBox.Text = "Address";
+            this.addressTextBox.Enter += new System.EventHandler(this.addressTextBox_Enter);
+            this.addressTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.addressTextBox_KeyPress);
+            this.addressTextBox.Leave += new System.EventHandler(this.addressTextBox_Leave);
+            // 
+            // portTextBox
+            // 
+            this.portTextBox.Location = new System.Drawing.Point(119, 415);
+            this.portTextBox.Name = "portTextBox";
+            this.portTextBox.Size = new System.Drawing.Size(73, 20);
+            this.portTextBox.TabIndex = 11;
+            this.portTextBox.Text = "Port";
+            this.portTextBox.Enter += new System.EventHandler(this.portTextBox_Enter);
+            this.portTextBox.Leave += new System.EventHandler(this.portTextBox_Leave);
+            // 
+            // saveParams
+            // 
+            this.saveParams.Location = new System.Drawing.Point(528, 413);
+            this.saveParams.Name = "saveParams";
+            this.saveParams.Size = new System.Drawing.Size(108, 23);
+            this.saveParams.TabIndex = 12;
+            this.saveParams.Text = "Save Parameters";
+            this.saveParams.UseVisualStyleBackColor = true;
+            this.saveParams.Click += new System.EventHandler(this.saveParams_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(487, 421);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(0, 13);
+            this.label1.TabIndex = 13;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(754, 443);
             this.ControlBox = false;
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.saveParams);
+            this.Controls.Add(this.portTextBox);
+            this.Controls.Add(this.addressTextBox);
             this.Controls.Add(this.status);
             this.Controls.Add(this.connectionButton);
             this.Controls.Add(this.closeButton);
@@ -227,6 +274,10 @@
         private System.Windows.Forms.Button connectionButton;
         private System.Windows.Forms.Label status;
         private System.Windows.Forms.Timer statusTimer;
+        private System.Windows.Forms.TextBox addressTextBox;
+        private System.Windows.Forms.TextBox portTextBox;
+        private System.Windows.Forms.Button saveParams;
+        private System.Windows.Forms.Label label1;
     }
 }
 
