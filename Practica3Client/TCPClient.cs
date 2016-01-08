@@ -32,19 +32,14 @@ public class AsynchronousClient {
 
     // The response from the remote device.
     private static String response = String.Empty;
-    private String message;
+    public Socket socket;
+    private System.Windows.Forms.Button connectionButton;
+    public String TCP_TEXT_START = "Start Connection";
+    public String TCP_TEXT_STOP = "Stop Connection";
 
-    public AsynchronousClient(System.Windows.Forms.TextBox logs, String message) {
+    public AsynchronousClient(System.Windows.Forms.TextBox logs, System.Windows.Forms.Button connectionButton) {
         this.logsTextBox = logs;
-        this.message = message;
-    }
-
-    public void addLog(String message) {
-        MethodInvoker action = delegate {
-            logsTextBox.AppendText(message + "\n\r" + System.Environment.NewLine);
-        };
-        logsTextBox.BeginInvoke(action);
-
+        this.connectionButton = connectionButton;
     }
 
 
@@ -52,8 +47,6 @@ public class AsynchronousClient {
         // Connect to a remote device.
         try {
             // Establish the remote endpoint for the socket.
-            // The name of the 
-            // remote device is "host.contoso.com".
             IPHostEntry ipHostInfo = Dns.Resolve("localhost");
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
@@ -67,51 +60,30 @@ public class AsynchronousClient {
                 new AsyncCallback(ConnectCallback), socket);
             connectDone.WaitOne();
 
-            // Send test data to the remote device.
-            Send(socket, message);
-            sendDone.WaitOne();
-
-            // Receive the response from the remote device.
-            Receive(socket);
-            receiveDone.WaitOne();
-
-            // Write the response to the console.
-            addLog("Response received : " + response);
-            Console.WriteLine("Response received : {0}", response);
-
-            // Release the socket.
-            //socket.Shutdown(SocketShutdown.Both);
-            //socket.Close();
 
         } catch (Exception e) {
-            Console.WriteLine(e.ToString());
+            
+            Console.WriteLine( "Error starting server: "+e.ToString());
             addLog(e.ToString());
 
         }
     }
 
-    private void sendRoutine() {
-
-    }
-
-    private  void ConnectCallback(IAsyncResult ar) {
+    private void ConnectCallback(IAsyncResult ar) {
         try {
             // Retrieve the socket from the state object.
             Socket client = (Socket)ar.AsyncState;
-
+            socket = client;
             // Complete the connection.
             client.EndConnect(ar);
-            
-            Console.WriteLine("Socket connected to {0}",
-                client.RemoteEndPoint.ToString());
             addLog("Socket connected to " +
                 client.RemoteEndPoint.ToString());
+            changeButton(TCP_TEXT_STOP);
 
             // Signal that the connection has been made.
             connectDone.Set();
         } catch (Exception e) {
             addLog(e.Message.ToString());
-            Console.WriteLine(e.ToString());
         }
     }
 
@@ -164,13 +136,15 @@ public class AsynchronousClient {
 
     public void Send(Socket client, String data) {
         // Convert the string data to byte data using ASCII encoding.
+        Console.WriteLine("Sending....");
         byte[] byteData = Encoding.ASCII.GetBytes(data);
+        
+        addLog("Sending: " + data + " .");
 
         // Begin sending the data to the remote device.
         client.BeginSend(byteData, 0, byteData.Length, 0,
             new AsyncCallback(SendCallback), client);
     }
-
     private void SendCallback(IAsyncResult ar) {
         try {
             // Retrieve the socket from the state object.
@@ -188,6 +162,69 @@ public class AsynchronousClient {
 
         }
     }
+    private Boolean isConnected() {
 
-  
+        bool blockingState = socket.Blocking;
+        try {
+            byte[] tmp = new byte[1];
+
+            socket.Blocking = false;
+            socket.Send(tmp, 0, 0);
+            return true;
+        } catch (SocketException e) {
+            // 10035 == WSAEWOULDBLOCK
+            if (e.NativeErrorCode.Equals(10035)) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } finally {
+            socket.Blocking = blockingState;
+        }
+
+    }
+    public void addLog(String message) {
+        MethodInvoker action = delegate {
+            logsTextBox.AppendText(message + "\n\r" + System.Environment.NewLine);
+        };
+        logsTextBox.BeginInvoke(action);
+
+    }
+    public void changeButton(String state) {
+        MethodInvoker action = delegate {
+            connectionButton.Text = state;
+        };
+        connectionButton.BeginInvoke(action);
+
+    }
+    public String getSocketStatus() {
+        return (isConnected()) ? "Online" : "Offline";
+    }
+
+    public void sendMessage(String message) {
+        if (isConnected()) {
+            Send(socket, message);
+            sendDone.WaitOne();
+
+            // Receive the response from the remote device.
+            Receive(socket);
+            receiveDone.WaitOne();
+
+            // Write the response to the console.
+            addLog("Response received : " + response);
+        }
+
+
+
+    }
+    public void closeSocket() {
+        // Release the socket.
+        socket.Shutdown(SocketShutdown.Both);
+        socket.Dispose();
+        socket.Close();
+    }
+
+
+
 }
